@@ -1,0 +1,1319 @@
+{
+  "contractName": "ChangeTracker",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "_gitHash",
+          "type": "bytes20"
+        },
+        {
+          "indexed": false,
+          "name": "_additionalInformation",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "_costs",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "_estimation",
+          "type": "uint256"
+        }
+      ],
+      "name": "NewChangeRequest",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_voter",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "_vote",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "name": "_currentState",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "name": "_voteInfo",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "_votesLeft",
+          "type": "uint256"
+        }
+      ],
+      "name": "NewVote",
+      "type": "event"
+    }
+  ],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603580601d6000396000f3006080604052600080fd00a165627a7a723058205761f09a4cbb8f48a067201df74f7b102c003f49a9b0b00a062ebe915449b9630029",
+  "deployedBytecode": "0x6080604052600080fd00a165627a7a723058205761f09a4cbb8f48a067201df74f7b102c003f49a9b0b00a062ebe915449b9630029",
+  "sourceMap": "28:900:1:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;28:900:1;;;;;;;",
+  "deployedSourceMap": "28:900:1:-;;;;;",
+  "source": "pragma solidity ^0.4.24;\r\n\r\ncontract ChangeTracker {\r\n    enum State {\r\n        changeProposed, changeManaged, changeApproved, changeRejected, changeReleased\r\n    }\r\n\r\n    struct Change {\r\n        address _changeOwner;\r\n        bytes20 _gitHash;\r\n        string _additionalInformation;\r\n        uint256 _costs;\r\n        uint256 _estimation;\r\n        State _state;\r\n        mapping(address => bool) _allowedToVote;\r\n        uint256 _voteCount;\r\n        string _voteInfo;\r\n    }\r\n\r\n    event NewChangeRequest(\r\n        bytes20 indexed _gitHash,\r\n        string _additionalInformation,\r\n        uint256 _costs,\r\n        uint256 _estimation\r\n    );\r\n\r\n    // This event gets propagated every time a new Vote happens and tracks the _currentChange.state and the _votesLeft\r\n    event NewVote(\r\n        address _voter,\r\n        bool _vote,\r\n        State _currentState,\r\n        string _voteInfo,\r\n        uint256 _votesLeft\r\n    );\r\n}\r\n",
+  "sourcePath": "C:\\Users\\David\\workspace\\ChangeManager\\contracts\\ChangeTracker.sol",
+  "ast": {
+    "absolutePath": "/C/Users/David/workspace/ChangeManager/contracts/ChangeTracker.sol",
+    "exportedSymbols": {
+      "ChangeTracker": [
+        452
+      ]
+    },
+    "id": 453,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 402,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".24"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:1"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 452,
+        "linearizedBaseContracts": [
+          452
+        ],
+        "name": "ChangeTracker",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "ChangeTracker.State",
+            "id": 408,
+            "members": [
+              {
+                "id": 403,
+                "name": "changeProposed",
+                "nodeType": "EnumValue",
+                "src": "80:14:1"
+              },
+              {
+                "id": 404,
+                "name": "changeManaged",
+                "nodeType": "EnumValue",
+                "src": "96:13:1"
+              },
+              {
+                "id": 405,
+                "name": "changeApproved",
+                "nodeType": "EnumValue",
+                "src": "111:14:1"
+              },
+              {
+                "id": 406,
+                "name": "changeRejected",
+                "nodeType": "EnumValue",
+                "src": "127:14:1"
+              },
+              {
+                "id": 407,
+                "name": "changeReleased",
+                "nodeType": "EnumValue",
+                "src": "143:14:1"
+              }
+            ],
+            "name": "State",
+            "nodeType": "EnumDefinition",
+            "src": "58:106:1"
+          },
+          {
+            "canonicalName": "ChangeTracker.Change",
+            "id": 429,
+            "members": [
+              {
+                "constant": false,
+                "id": 410,
+                "name": "_changeOwner",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "197:20:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 409,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "197:7:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 412,
+                "name": "_gitHash",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "228:16:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes20",
+                  "typeString": "bytes20"
+                },
+                "typeName": {
+                  "id": 411,
+                  "name": "bytes20",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "228:7:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes20",
+                    "typeString": "bytes20"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 414,
+                "name": "_additionalInformation",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "255:29:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 413,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "255:6:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 416,
+                "name": "_costs",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "295:14:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 415,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "295:7:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 418,
+                "name": "_estimation",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "320:19:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 417,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "320:7:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 420,
+                "name": "_state",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "350:12:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_enum$_State_$408",
+                  "typeString": "enum ChangeTracker.State"
+                },
+                "typeName": {
+                  "contractScope": null,
+                  "id": 419,
+                  "name": "State",
+                  "nodeType": "UserDefinedTypeName",
+                  "referencedDeclaration": 408,
+                  "src": "350:5:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_State_$408",
+                    "typeString": "enum ChangeTracker.State"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 424,
+                "name": "_allowedToVote",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "373:39:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+                  "typeString": "mapping(address => bool)"
+                },
+                "typeName": {
+                  "id": 423,
+                  "keyType": {
+                    "id": 421,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "381:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "nodeType": "Mapping",
+                  "src": "373:24:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+                    "typeString": "mapping(address => bool)"
+                  },
+                  "valueType": {
+                    "id": 422,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "392:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 426,
+                "name": "_voteCount",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "423:18:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 425,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "423:7:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 428,
+                "name": "_voteInfo",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "452:16:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 427,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "452:6:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "Change",
+            "nodeType": "StructDefinition",
+            "scope": 452,
+            "src": "172:304:1",
+            "visibility": "public"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 439,
+            "name": "NewChangeRequest",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 438,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 431,
+                  "indexed": true,
+                  "name": "_gitHash",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 439,
+                  "src": "517:24:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes20",
+                    "typeString": "bytes20"
+                  },
+                  "typeName": {
+                    "id": 430,
+                    "name": "bytes20",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "517:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes20",
+                      "typeString": "bytes20"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 433,
+                  "indexed": false,
+                  "name": "_additionalInformation",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 439,
+                  "src": "552:29:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 432,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "552:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 435,
+                  "indexed": false,
+                  "name": "_costs",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 439,
+                  "src": "592:14:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 434,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "592:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 437,
+                  "indexed": false,
+                  "name": "_estimation",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 439,
+                  "src": "617:19:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 436,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "617:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "506:137:1"
+            },
+            "src": "484:160:1"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 451,
+            "name": "NewVote",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 450,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 441,
+                  "indexed": false,
+                  "name": "_voter",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 451,
+                  "src": "796:14:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 440,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "796:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 443,
+                  "indexed": false,
+                  "name": "_vote",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 451,
+                  "src": "821:10:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 442,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "821:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 445,
+                  "indexed": false,
+                  "name": "_currentState",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 451,
+                  "src": "842:19:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_State_$408",
+                    "typeString": "enum ChangeTracker.State"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 444,
+                    "name": "State",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 408,
+                    "src": "842:5:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_State_$408",
+                      "typeString": "enum ChangeTracker.State"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 447,
+                  "indexed": false,
+                  "name": "_voteInfo",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 451,
+                  "src": "872:16:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 446,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "872:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 449,
+                  "indexed": false,
+                  "name": "_votesLeft",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 451,
+                  "src": "899:18:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 448,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "899:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "785:139:1"
+            },
+            "src": "772:153:1"
+          }
+        ],
+        "scope": 453,
+        "src": "28:900:1"
+      }
+    ],
+    "src": "0:930:1"
+  },
+  "legacyAST": {
+    "absolutePath": "/C/Users/David/workspace/ChangeManager/contracts/ChangeTracker.sol",
+    "exportedSymbols": {
+      "ChangeTracker": [
+        452
+      ]
+    },
+    "id": 453,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 402,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".24"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:1"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 452,
+        "linearizedBaseContracts": [
+          452
+        ],
+        "name": "ChangeTracker",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "ChangeTracker.State",
+            "id": 408,
+            "members": [
+              {
+                "id": 403,
+                "name": "changeProposed",
+                "nodeType": "EnumValue",
+                "src": "80:14:1"
+              },
+              {
+                "id": 404,
+                "name": "changeManaged",
+                "nodeType": "EnumValue",
+                "src": "96:13:1"
+              },
+              {
+                "id": 405,
+                "name": "changeApproved",
+                "nodeType": "EnumValue",
+                "src": "111:14:1"
+              },
+              {
+                "id": 406,
+                "name": "changeRejected",
+                "nodeType": "EnumValue",
+                "src": "127:14:1"
+              },
+              {
+                "id": 407,
+                "name": "changeReleased",
+                "nodeType": "EnumValue",
+                "src": "143:14:1"
+              }
+            ],
+            "name": "State",
+            "nodeType": "EnumDefinition",
+            "src": "58:106:1"
+          },
+          {
+            "canonicalName": "ChangeTracker.Change",
+            "id": 429,
+            "members": [
+              {
+                "constant": false,
+                "id": 410,
+                "name": "_changeOwner",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "197:20:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 409,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "197:7:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 412,
+                "name": "_gitHash",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "228:16:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes20",
+                  "typeString": "bytes20"
+                },
+                "typeName": {
+                  "id": 411,
+                  "name": "bytes20",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "228:7:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes20",
+                    "typeString": "bytes20"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 414,
+                "name": "_additionalInformation",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "255:29:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 413,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "255:6:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 416,
+                "name": "_costs",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "295:14:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 415,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "295:7:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 418,
+                "name": "_estimation",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "320:19:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 417,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "320:7:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 420,
+                "name": "_state",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "350:12:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_enum$_State_$408",
+                  "typeString": "enum ChangeTracker.State"
+                },
+                "typeName": {
+                  "contractScope": null,
+                  "id": 419,
+                  "name": "State",
+                  "nodeType": "UserDefinedTypeName",
+                  "referencedDeclaration": 408,
+                  "src": "350:5:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_State_$408",
+                    "typeString": "enum ChangeTracker.State"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 424,
+                "name": "_allowedToVote",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "373:39:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+                  "typeString": "mapping(address => bool)"
+                },
+                "typeName": {
+                  "id": 423,
+                  "keyType": {
+                    "id": 421,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "381:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "nodeType": "Mapping",
+                  "src": "373:24:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+                    "typeString": "mapping(address => bool)"
+                  },
+                  "valueType": {
+                    "id": 422,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "392:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 426,
+                "name": "_voteCount",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "423:18:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 425,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "423:7:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 428,
+                "name": "_voteInfo",
+                "nodeType": "VariableDeclaration",
+                "scope": 429,
+                "src": "452:16:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 427,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "452:6:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "Change",
+            "nodeType": "StructDefinition",
+            "scope": 452,
+            "src": "172:304:1",
+            "visibility": "public"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 439,
+            "name": "NewChangeRequest",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 438,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 431,
+                  "indexed": true,
+                  "name": "_gitHash",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 439,
+                  "src": "517:24:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes20",
+                    "typeString": "bytes20"
+                  },
+                  "typeName": {
+                    "id": 430,
+                    "name": "bytes20",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "517:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes20",
+                      "typeString": "bytes20"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 433,
+                  "indexed": false,
+                  "name": "_additionalInformation",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 439,
+                  "src": "552:29:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 432,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "552:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 435,
+                  "indexed": false,
+                  "name": "_costs",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 439,
+                  "src": "592:14:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 434,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "592:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 437,
+                  "indexed": false,
+                  "name": "_estimation",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 439,
+                  "src": "617:19:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 436,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "617:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "506:137:1"
+            },
+            "src": "484:160:1"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 451,
+            "name": "NewVote",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 450,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 441,
+                  "indexed": false,
+                  "name": "_voter",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 451,
+                  "src": "796:14:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 440,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "796:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 443,
+                  "indexed": false,
+                  "name": "_vote",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 451,
+                  "src": "821:10:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 442,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "821:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 445,
+                  "indexed": false,
+                  "name": "_currentState",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 451,
+                  "src": "842:19:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_State_$408",
+                    "typeString": "enum ChangeTracker.State"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 444,
+                    "name": "State",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 408,
+                    "src": "842:5:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_State_$408",
+                      "typeString": "enum ChangeTracker.State"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 447,
+                  "indexed": false,
+                  "name": "_voteInfo",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 451,
+                  "src": "872:16:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 446,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "872:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 449,
+                  "indexed": false,
+                  "name": "_votesLeft",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 451,
+                  "src": "899:18:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 448,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "899:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "785:139:1"
+            },
+            "src": "772:153:1"
+          }
+        ],
+        "scope": 453,
+        "src": "28:900:1"
+      }
+    ],
+    "src": "0:930:1"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.24+commit.e67f0147.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.0",
+  "updatedAt": "2018-06-27T13:10:03.881Z"
+}
