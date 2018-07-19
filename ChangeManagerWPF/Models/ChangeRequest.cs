@@ -1,4 +1,5 @@
 ﻿using ChangeManager.Contracts.ChangeManager.CQS;
+using ChangeManager.Contracts.ChangeManager.DTOs;
 using ChangeManager.Contracts.ChangeManager.Service;
 using Nethereum.Contracts;
 using Nethereum.Web3;
@@ -7,20 +8,25 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace ChangeManagerWPF.Model
 {
     class ChangeRequest
     {
-        private State state;
-        private uint voteInfo;
-        private uint votesLeft;
+        public State state { get; set; }
+        public string voteInfo { get; set; }
+        public uint votesLeft { get; set; }
         public string changeOwner { get; set; }
         public string gitHash { get; set; }
         public CreateNewChangeRequestFunction changeRequestFunction { get; set; }
         public ChangeManagerService changeManagerService { get; set; }
         private string contractAddress;
+
+        public BigInteger costs { get; private set; }
+        public BigInteger estimation { get; private set; }
+        public string additionalInformation { get; private set; }
 
         public ChangeRequest(string gitHash, string additionalInformation, uint estimation, uint costs, string changeOwner)
         {
@@ -45,6 +51,8 @@ namespace ChangeManagerWPF.Model
             this.changeManagerService = changeManagerService;
             this.contractAddress = contractAddress;
             await changeManagerService.CreateNewChangeRequestRequestAsync(this.changeRequestFunction);
+            await this.updateChangeRequest();
+            await this.updateChangeRequest();
         }
 
         internal async Task managementVoteAsync(bool accept, List<string> responsibleParties, string voteInfo)
@@ -56,6 +64,7 @@ namespace ChangeManagerWPF.Model
             managementFunction.VoteInfo = voteInfo;
 
             await this.changeManagerService.ManagementVoteRequestAsync(managementFunction);
+            await this.updateState();
         }
 
         internal async Task responsibleVoteAsync(string privateKey, bool accept, string voteInfo)
@@ -72,6 +81,29 @@ namespace ChangeManagerWPF.Model
             responsibleVoteFunction.Gas = 1000000;
 
             await responsibleService.ResponsibleVoteRequestAsync(responsibleVoteFunction);
+            await this.updateState();
+        }
+
+        internal async Task updateState()
+        {
+            ViewStateFunction viewStateFunction = new ViewStateFunction();
+            viewStateFunction.GitHash = this.changeRequestFunction.GitHash;
+            ViewStateOutputDTO viewState = await changeManagerService.ViewStateQueryAsync(viewStateFunction);
+
+            this.state = (State) viewState.State;
+            this.votesLeft = (uint) viewState.VoteCount;
+            this.voteInfo = viewState.VoteInfo;
+        }
+        
+        internal async Task updateChangeRequest()
+        {
+            ViewChangeFunction viewChangeFunction = new ViewChangeFunction();
+            viewChangeFunction.GitHash = this.changeRequestFunction.GitHash;
+            ViewChangeOutputDTO viewChangeRequest = await changeManagerService.ViewChangeQueryAsync(viewChangeFunction);
+
+            this.costs = viewChangeRequest.Costs;
+            this.estimation = viewChangeRequest.Estimation;
+            this.additionalInformation = viewChangeRequest.AdditionalInformation;
         }
     }
 }

@@ -42,23 +42,19 @@ namespace ChangeManagerWPF
         {
             try
             {
-
+                if (this.changeRequests.ContainsKey(gitHash.Text))
+                {
+                    MessageBox.Show($"ChangeRequest already exists:  { gitHash.Text }");
+                    return;
+                }
                 ChangeRequest changeRequest = new ChangeRequest(gitHash.Text, additionalInformation.Text, UInt32.Parse(estimation.Text), UInt32.Parse(costs.Text), "Owner");
                 await changeRequest.createChangeRequestAsync(changeManagerService, contractAddress);
 
-                // Needs to be removed; Does not work on public blockchain because we don't wait for block to be mined
-                ViewChangeFunction viewChangeFunction = new ViewChangeFunction();
-                viewChangeFunction.GitHash = changeRequest.changeRequestFunction.GitHash;
-
-                ViewChangeOutputDTO viewChangeRequest = await changeManagerService.ViewChangeQueryAsync(viewChangeFunction);
-
                 managementGitHash.Items.Add(gitHash.Text);
                 this.changeRequests.Add(gitHash.Text, changeRequest);
+                this.changeRequestsTable.ItemsSource = changeRequests.Values.ToList();
 
-                MessageBox.Show($"Created ChangeRequest:  { gitHash.Text }\n" +
-                    $"Additional Information: {viewChangeRequest.AdditionalInformation}\n" +
-                    $"Costs (Euro): {viewChangeRequest.Costs}\n" +
-                    $"Estimation (Hours): {viewChangeRequest.Estimation}");
+                MessageBox.Show($"Created ChangeRequest:  { gitHash.Text }");
             }
             catch (Exception ex)
             {
@@ -71,30 +67,26 @@ namespace ChangeManagerWPF
             try
             {
                 string gitHash = managementGitHash.SelectedItem.ToString();
+                ChangeRequest changeRequest= changeRequests[gitHash];
                 List<string> responsibleParties = managementAddresses.Text.Split(',').Select(p => p.Trim()).ToList<string>();
 
                 if (managementAccept.IsChecked == true)
                 {
-                    await changeRequests[gitHash].managementVoteAsync(true, responsibleParties, managementInfo.Text);
+                    await changeRequest.managementVoteAsync(true, responsibleParties, managementInfo.Text);
+                    // Remove privateKeys
+                    string[] privateKeys = { "ae6ae8e5ccbfb04590405997ee2d52d2b330726137b875053c36d94e974d162f", "0dbbe8e4ae425a6d2687f1a7e3ba17bc98c673636790f1b8ad91193c05875ef1" };
+                    responsibleAddress.ItemsSource = privateKeys;
+                    responsibleGitHash.Items.Add(gitHash);
                 }
                 else if (managementReject.IsChecked == true)
                 {
-                    await changeRequests[gitHash].managementVoteAsync(false, new List<string>(), managementInfo.Text);
+                    await changeRequest.managementVoteAsync(false, new List<string>(), managementInfo.Text);
                 }
 
-                ViewStateFunction viewStateFunction = new ViewStateFunction();
-                viewStateFunction.GitHash = changeRequests[gitHash].changeRequestFunction.GitHash;
-                ViewStateOutputDTO viewState = await changeManagerService.ViewStateQueryAsync(viewStateFunction);
+                this.changeRequestsTable.ItemsSource = changeRequests.Values.ToList();
 
-                // Remove privateKeys
-                string[] privateKeys = { "ae6ae8e5ccbfb04590405997ee2d52d2b330726137b875053c36d94e974d162f", "0dbbe8e4ae425a6d2687f1a7e3ba17bc98c673636790f1b8ad91193c05875ef1" };
-                responsibleAddress.ItemsSource = privateKeys;
-                responsibleGitHash.Items.Add(gitHash);
-
-                MessageBox.Show($"ChangeRequest:  { gitHash }\n" +
-                    $"Vote Information: {viewState.VoteInfo}\n" +
-                    $"Votes Left: {viewState.VoteCount}\n" +
-                    $"State: {viewState.State}");
+                MessageBox.Show($"ChangeRequest managed:  { gitHash }\n");
+                
             }
             catch (Exception ex)
             {
@@ -108,24 +100,20 @@ namespace ChangeManagerWPF
             {
                 string address = responsibleAddress.SelectedItem.ToString();
                 string gitHash = responsibleGitHash.SelectedItem.ToString();
+                ChangeRequest changeRequest = changeRequests[gitHash];
 
                 if (responsibleAccept.IsChecked == true)
                 {
-                    await changeRequests[gitHash].responsibleVoteAsync(address, true, responsibleInfo.Text);
+                    await changeRequest.responsibleVoteAsync(address, true, responsibleInfo.Text);
                 }
-                else if (responsibleAccept.IsChecked == true)
+                else if (responsibleReject.IsChecked == true)
                 {
-                    await changeRequests[gitHash].responsibleVoteAsync(address, false, responsibleInfo.Text);
+                    await changeRequest.responsibleVoteAsync(address, false, responsibleInfo.Text);
                 }
 
-                ViewStateFunction viewStateFunction = new ViewStateFunction();
-                viewStateFunction.GitHash = changeRequests[gitHash].changeRequestFunction.GitHash;
-                ViewStateOutputDTO viewState = await changeManagerService.ViewStateQueryAsync(viewStateFunction);
+                this.changeRequestsTable.ItemsSource = changeRequests.Values.ToList();
 
-                MessageBox.Show($"ChangeRequest:  { gitHash }\n" +
-                    $"Vote Information: {viewState.VoteInfo}\n" +
-                    $"Votes Left: {viewState.VoteCount}\n" +
-                    $"State: {viewState.State}");
+                MessageBox.Show($"Voted on ChangeRequest:  { gitHash }");
             }
             catch (Exception ex)
             {
