@@ -32,3 +32,5 @@ C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManag
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManagerWPF.exe
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManagerWPF.pdb
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManagerWPF.csprojAssemblyReference.cache
+C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\InitializationWindow.g.cs
+C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\InitializationWindow.baml
