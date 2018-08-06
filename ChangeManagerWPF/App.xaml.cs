@@ -29,7 +29,7 @@ namespace ChangeManagerWPF
 
         private async void NewChangeManager(string gitProject)
         {
-            web3 = new Web3(new Account("c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3"));
+            web3 = new Web3(new Account("7b0ce3ddd31b4bba4b8f116217b8db976b8537fae717fd5ef92c4233f83e7b36"));
             deployment = new ChangeManagerDeployment();
             TransactionReceipt receipt = await ChangeManagerService.DeployContractAndWaitForReceiptAsync(web3, deployment);
 
@@ -42,7 +42,7 @@ namespace ChangeManagerWPF
 
         private void UseChangeManager(string address, string gitProject)
         {
-            web3 = new Web3(new Account("c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3"));
+            web3 = new Web3(new Account("7b0ce3ddd31b4bba4b8f116217b8db976b8537fae717fd5ef92c4233f83e7b36"));
 
             changeManagerService = new ChangeManagerService(web3, address);
 

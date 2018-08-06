@@ -31,7 +31,7 @@ namespace ChangeManager.Contracts.ChangeManager.Service
     
         protected Web3 Web3{ get; }
         
-        protected ContractHandler ContractHandler { get; }
+        public ContractHandler ContractHandler { get; }
         
         public ChangeManagerService(Web3 web3, string contractAddress)
         {

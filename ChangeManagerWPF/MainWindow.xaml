@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChangeManagerWPF"
         mc:Ignorable="d"
-        Title="ChangeManager" Height="450" Width="800">
+        Title="ChangeManager" Height="450" Width="800"
+        Closing="Window_Closing"
+        >
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>

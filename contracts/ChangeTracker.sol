@@ -14,7 +14,6 @@ contract ChangeTracker {
         State _state;
         mapping(address => bool) _allowedToVote;
         uint256 _voteCount;
-        string _voteInfo;
     }
 
     event NewChangeRequest(
@@ -26,6 +25,7 @@ contract ChangeTracker {
 
     // This event gets propagated every time a new Vote happens and tracks the _currentChange.state and the _votesLeft
     event NewVote(
+        bytes20 indexed _gitHash,
         address _voter,
         bool _vote,
         State _currentState,

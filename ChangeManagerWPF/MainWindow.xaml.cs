@@ -2,6 +2,9 @@
 using ChangeManager.Contracts.ChangeManager.DTOs;
 using ChangeManager.Contracts.ChangeManager.Service;
 using ChangeManagerWPF.Model;
+using Nethereum.Contracts;
+using Nethereum.Hex.HexTypes;
+using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3;
 using System;
 using System.Collections.Generic;
@@ -9,6 +12,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -18,6 +22,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace ChangeManagerWPF
 {
@@ -29,6 +34,10 @@ namespace ChangeManagerWPF
         private ChangeManagerService changeManagerService;
         private string contractAddress;
         private Dictionary<string, ChangeRequest> changeRequests;
+        Event newChangeRequestEventLog;
+        Event newVoteEventLog;
+
+        DispatcherTimer timer;
 
         public MainWindow(ChangeManagerService changeManagerService, string contractAddress)
         {
@@ -36,6 +45,30 @@ namespace ChangeManagerWPF
             this.changeManagerService = changeManagerService;
             this.contractAddress = contractAddress;
             changeRequests = new Dictionary<string, ChangeRequest>();
+
+            newVoteEventLog = changeManagerService.ContractHandler.GetEvent<NewVoteEventDTO>();
+            newChangeRequestEventLog = changeManagerService.ContractHandler.GetEvent<NewChangeRequestEventDTO>();
+
+            //filterCR = newChangeRequestEventLog.CreateFilterInput();
+            timer = new DispatcherTimer();
+            timer.Tick += new EventHandler(checkEvents);
+            timer.Interval = new TimeSpan(0, 0, 1);
+            timer.Start();
+        }
+
+        private async void checkEvents(object sender, EventArgs e)
+        {
+            NewFilterInput filterCR = newChangeRequestEventLog.CreateFilterInput(BlockParameter.CreateEarliest(), BlockParameter.CreateLatest());
+            NewFilterInput filterVote = newVoteEventLog.CreateFilterInput(BlockParameter.CreateEarliest(), BlockParameter.CreateLatest());
+
+            //TODO: Adopt so that blocks are not searched multiple times
+            List<EventLog<NewChangeRequestEventDTO>> logCR = await newChangeRequestEventLog.GetAllChanges<NewChangeRequestEventDTO>(filterCR);
+            List<EventLog<NewVoteEventDTO>> logVote = await newVoteEventLog.GetAllChanges<NewVoteEventDTO>(filterVote);
+
+            Debug.WriteLine("Checking for CR Events: " + logCR.Count);
+            logCR.ForEach(x => Debug.WriteLine("CR created event: " + x.Event.AdditionalInformation));
+            Debug.WriteLine("Checking for Vote Events: " + logVote.Count);
+            logVote.ForEach(x => Debug.WriteLine("Vote created event: " + x.Event.VoteInfo));
         }
 
         private async void createChangeRequestAsync(object sender, RoutedEventArgs e)
@@ -119,6 +152,11 @@ namespace ChangeManagerWPF
             {
                 Debug.Write(ex);
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            timer.Stop();
         }
     }
 }
