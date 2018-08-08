@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using System.Numerics;
 using Nethereum.Hex.HexTypes;
 using Nethereum.ABI.FunctionEncoding.Attributes;
-namespace ChangeManager.Contracts.ChangeManager.DTOs
+namespace Contracts.Contracts.ChangeManager.DTOs
 {
     [FunctionOutput]
     public class ViewChangeOutputDTO

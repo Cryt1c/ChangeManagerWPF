@@ -89,7 +89,7 @@
                     <RadioButton x:Name="managementReject" Content="No" Grid.Column="3" Grid.Row="3"></RadioButton>
 
                     <TextBlock Grid.Column="1" Grid.Row="4" Text="Addresses:"/>
-                    <TextBox x:Name="managementAddresses" Grid.Column="2" Grid.Row="4" Width="300" Text="0xf17f52151EbEF6C7334FAD080c5704D77216b732, 0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef"/>
+                    <TextBox x:Name="managementAddresses" Grid.Column="2" Grid.Row="4" Width="300" Text="0x24bF6D040AA3339De86074ea9a46c4f8a7C800f8, 0x8FCDFa5e58B73F8941C093862D92979d653E43b2"/>
 
                     <TextBlock Grid.Column="1" Grid.Row="5" Text="Vote Info:"/>
                     <TextBox x:Name="managementInfo" Grid.Column="2" Grid.Row="5" Width="300" Text="This is managementinfo"/>
@@ -119,8 +119,8 @@
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Column="1" Grid.Row="0" Text="Your Address:"/>
-                    <ComboBox x:Name="responsibleAddress" Grid.Column="2" Grid.Row="0" Width="300"/>
+                    <TextBlock Grid.Column="1" Grid.Row="0" Text="Your Private Key:"/>
+                    <TextBox x:Name="responsibleAddress" Grid.Column="2" Grid.Row="0" Width="300" Text="2165a1e684eab9c0023fefe3fb8da09b18ac4b966b3136664a89cf0b081c8e38"/>
 
                     <TextBlock Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Text="Vote on a ChangeRequest:"/>
 
@@ -151,9 +151,9 @@
                     <GridViewColumn Header="Githash" Width="300" DisplayMemberBinding="{Binding gitHash}" />
                     <GridViewColumn Header="State" Width="100" DisplayMemberBinding="{Binding state, UpdateSourceTrigger=PropertyChanged}"/>
                     <GridViewColumn Header="Votes Left" Width="75" DisplayMemberBinding="{Binding votesLeft, UpdateSourceTrigger=PropertyChanged}" />
-                    <GridViewColumn Header="Additional Information" Width="125" DisplayMemberBinding="{Binding changeRequestFunction.AdditionalInformation}"/>
-                    <GridViewColumn Header="Costs" Width="75" DisplayMemberBinding="{Binding changeRequestFunction.Costs}"/>
-                    <GridViewColumn Header="Estimation" Width="75" DisplayMemberBinding="{Binding changeRequestFunction.Estimation}"/>
+                    <GridViewColumn Header="Additional Information" Width="125" DisplayMemberBinding="{Binding additionalInformation}"/>
+                    <GridViewColumn Header="Costs" Width="75" DisplayMemberBinding="{Binding costs}"/>
+                    <GridViewColumn Header="Estimation" Width="75" DisplayMemberBinding="{Binding estimation}"/>
                 </GridView>
             </ListView.View>
         </ListView>

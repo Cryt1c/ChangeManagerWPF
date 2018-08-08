@@ -1,6 +1,9 @@
-using Nethereum.ABI.FunctionEncoding.Attributes;
+using System;
+using System.Threading.Tasks;
 using System.Numerics;
-namespace ChangeManager.Contracts.ChangeManager.DTOs
+using Nethereum.Hex.HexTypes;
+using Nethereum.ABI.FunctionEncoding.Attributes;
+namespace Contracts.Contracts.ChangeManager.DTOs
 {
     [Event("NewChangeRequest")]
     public class NewChangeRequestEventDTO

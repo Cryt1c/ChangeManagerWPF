@@ -121,6 +121,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Converter.cs" />
     <Compile Include="Models\ChangeManager\CQS\ChangeManagerDeployment.cs" />
     <Compile Include="Models\ChangeManager\CQS\CreateNewChangeRequestFunction.cs" />
     <Compile Include="Models\ChangeManager\CQS\ManagementVoteFunction.cs" />

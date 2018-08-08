@@ -1,13 +1,8 @@
-﻿using ChangeManager.Contracts.ChangeManager.CQS;
-using ChangeManager.Contracts.ChangeManager.DTOs;
-using ChangeManager.Contracts.ChangeManager.Service;
-using ChangeManagerWPF.Model;
+﻿using Contracts.Contracts.ChangeManager.CQS;
+using Contracts.Contracts.ChangeManager.Service;
 using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
-using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ChangeManagerWPF

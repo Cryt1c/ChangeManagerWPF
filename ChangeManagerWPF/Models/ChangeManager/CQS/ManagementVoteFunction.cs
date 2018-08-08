@@ -4,10 +4,10 @@ using System.Numerics;
 using Nethereum.Hex.HexTypes;
 using Nethereum.Contracts.CQS;
 using Nethereum.ABI.FunctionEncoding.Attributes;
-using ChangeManager.Contracts.ChangeManager.DTOs;
+using Contracts.Contracts.ChangeManager.DTOs;
 using System.Collections.Generic;
 
-namespace ChangeManager.Contracts.ChangeManager.CQS
+namespace Contracts.Contracts.ChangeManager.CQS
 {
     [Function("managementVote")]
     public class ManagementVoteFunction:ContractMessage

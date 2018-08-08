@@ -7,9 +7,9 @@ using Nethereum.Web3;
 using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Contracts.CQS;
 using System.Threading;
-using ChangeManager.Contracts.ChangeManager.CQS;
-using ChangeManager.Contracts.ChangeManager.DTOs;
-namespace ChangeManager.Contracts.ChangeManager.Service
+using Contracts.Contracts.ChangeManager.CQS;
+using Contracts.Contracts.ChangeManager.DTOs;
+namespace Contracts.Contracts.ChangeManager.Service
 {
 
     public class ChangeManagerService
