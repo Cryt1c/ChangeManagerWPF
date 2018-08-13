@@ -5,13 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChangeManagerWPF"
         mc:Ignorable="d"
-        Title="InitializationWindow" Height="450" Width="800">
+        Title="ChangeManager" Height="200" Width="600">
     <Grid Margin="15">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="10" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -19,15 +21,16 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Label Grid.Column="1" Grid.Row="1">ContractManager Address:</Label>
-        <TextBox Name="initAddress" Grid.Column="1" Grid.Row="2" MinWidth="250">0x1234..</TextBox>
+        <Label Margin="5" Grid.Column="1" Grid.Row="1">ContractManager Address:</Label>
+        <TextBox Margin="5" Name="initAddress" Grid.Column="2" Grid.Row="1">0x1234..</TextBox>
 
-        <Label Grid.Column="1" Grid.Row="3">Git Project:</Label>
-        <TextBox Name="initGitProject" Grid.Column="1" Grid.Row="4" MinWidth="250">myproject</TextBox>
+        <Label Margin="5" Grid.Column="1" Grid.Row="3">Github Project:</Label>
+        <TextBox Margin="5" Name="initGitProject" Grid.Column="2" Grid.Row="3" >
+            &lt;owner&gt;/&lt;project&gt;</TextBox>  
 
-        <WrapPanel Grid.Row="5" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0,15,0,0">
-            <Button MinWidth="60" Click="initUse" Margin="0,0,10,0">Use ContactManager at address</Button>
-            <Button MinWidth="60" Click="initNew">Create new ContactManager</Button>
+        <WrapPanel Margin="5" Grid.Row="4" Grid.Column="2"  HorizontalAlignment="Right" >
+            <Button Margin="5" MinWidth="60" Click="initUse" >Use ContactManager at address</Button>
+            <Button Margin="5" MinWidth="60" Click="initNew">Create new ContactManager</Button>
         </WrapPanel>
     </Grid>
 </Window>

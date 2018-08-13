@@ -1,15 +1,21 @@
 ﻿using ChangeManagerWPF.Model;
+using ChangeManagerWPF.Models;
 using ChangeManagerWPF.Models.ChangeManager;
 using Contracts.Contracts.ChangeManager.DTOs;
 using Contracts.Contracts.ChangeManager.Service;
 using Nethereum.Contracts;
 using Nethereum.RPC.Eth.DTOs;
+using Nethereum.Web3;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Numerics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Threading;
 
 namespace ChangeManagerWPF
@@ -19,7 +25,6 @@ namespace ChangeManagerWPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ChangeManagerService changeManagerService;
         private string contractAddress;
         private Dictionary<string, ChangeRequest> changeRequests;
         Event newChangeRequestEventLog;
@@ -27,14 +32,19 @@ namespace ChangeManagerWPF
         BlockParameter lastBlock;
         BlockParameter firstBlock;
         DispatcherTimer timer;
+        string gitProject;
 
-        public MainWindow(ChangeManagerService changeManagerService, string contractAddress)
+
+        public MainWindow(string contractAddress, string gitProject)
         {
             InitializeComponent();
-            this.changeManagerService = changeManagerService;
+            tabControl.Items.Remove(responsibleTab);
+            tabControl.Items.Remove(managementTab);
+
             this.contractAddress = contractAddress;
             changeRequests = new Dictionary<string, ChangeRequest>();
 
+            ChangeManagerService changeManagerService = new ChangeManagerService(new Web3(), contractAddress);
             newVoteEventLog = changeManagerService.ContractHandler.GetEvent<NewVoteEventDTO>();
             newChangeRequestEventLog = changeManagerService.ContractHandler.GetEvent<NewChangeRequestEventDTO>();
             firstBlock = BlockParameter.CreateEarliest();
@@ -43,6 +53,27 @@ namespace ChangeManagerWPF
             timer.Tick += new EventHandler(checkEvents);
             timer.Interval = new TimeSpan(0, 0, 2);
             timer.Start();
+            this.gitProject = gitProject;
+
+            getGitCommits(gitProject);
+        }
+
+        // Helper class for the Github request
+        private class Commit
+        {
+            public string sha { get; set; }
+        }
+        private async void getGitCommits(string gitProject)
+        {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add(
+                "User-Agent",
+                "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36");
+            string url = "https://api.github.com/repos/" + gitProject + "/commits";
+            var responseString = await client.GetStringAsync(url);
+            List<Commit> commit = JsonConvert.DeserializeObject<List<Commit>>(responseString);
+            commit.ForEach(x => createGitHash.Items.Add("0x" + x.sha));
         }
 
         private async void checkEvents(object sender, EventArgs e)
@@ -67,15 +98,10 @@ namespace ChangeManagerWPF
                 }
                 else
                 {
-                    changeRequest = new ChangeRequest(this.changeManagerService, this.contractAddress);
-                    changeRequest.updateChangeRequest(gitHash, additionalInformation.Text, UInt32.Parse(costs.Text), UInt32.Parse(estimation.Text));
+                    changeRequest = new ChangeRequest(this.contractAddress);
                     changeRequests.Add(gitHash, changeRequest);
                 }
                 changeRequest.updateChangeRequest(gitHash, cr.Event.AdditionalInformation, cr.Event.Costs, cr.Event.Estimation);
-                if (!managementGitHash.Items.Contains(gitHash))
-                {
-                    managementGitHash.Items.Add(gitHash);
-                }
             }
 
             // Get vote confirmation. Then update State of the vote.
@@ -84,21 +110,13 @@ namespace ChangeManagerWPF
             {
                 String gitHash = Converter.ByteArrayToBinHex(vote.Event.GitHash);
                 ChangeRequest changeRequest = changeRequests[gitHash];
-                changeRequest.updateVotes((State)vote.Event.CurrentState, vote.Event.VoteInfo, vote.Event.VotesLeft, vote.Event.Voter);
 
-                if (changeRequest.state == State.changeManaged)
+                if (!changeRequest.votes.ContainsKey(vote.Event.Voter))
                 {
-                    if(!responsibleGitHash.Items.Contains(gitHash))
-                    {
-                        responsibleGitHash.Items.Add(gitHash);
-                        managementGitHash.Items.Remove(gitHash);
-                    }
-                }
-                else if (changeRequest.state == State.changeApproved)
-                {
-
+                    changeRequest.updateVotes((State)vote.Event.CurrentState, vote.Event.VoteInfo, vote.Event.VotesLeft, vote.Event.Voter, vote.Event.Vote);
                 }
             }
+            updateVoteTableAndTabs();
             this.changeRequestsTable.ItemsSource = changeRequests.Values.ToList();
         }
 
@@ -107,16 +125,19 @@ namespace ChangeManagerWPF
             try
             {
                 // Prevents creation of CR duplicates
-                if (this.changeRequests.ContainsKey(gitHash.Text))
+                if (this.changeRequests.ContainsKey(createGitHash.Text))
                 {
-                    MessageBox.Show($"ChangeRequest already exists:  { gitHash.Text }");
+                    MessageBox.Show($"ChangeRequest already exists:  { createGitHash.Text }");
                     return;
                 }
-                ChangeRequest changeRequest = new ChangeRequest(changeManagerService, this.contractAddress);
-                await changeRequest.createChangeRequestAsync(gitHash.Text, additionalInformation.Text, UInt32.Parse(estimation.Text), UInt32.Parse(costs.Text));
-                this.changeRequests.Add(gitHash.Text, changeRequest);
+                string privateKey = createKey.Password;
+                privateKey = "7b0ce3ddd31b4bba4b8f116217b8db976b8537fae717fd5ef92c4233f83e7b36";
 
-                MessageBox.Show($"Created ChangeRequest:  { gitHash.Text }");
+                ChangeRequest changeRequest = new ChangeRequest(this.contractAddress);
+                await changeRequest.createChangeRequestAsync(privateKey, createGitHash.Text, createAdditionalInformation.Text, UInt32.Parse(createEstimation.Text), UInt32.Parse(createCosts.Text));
+                this.changeRequests.Add(createGitHash.Text, changeRequest);
+
+                MessageBox.Show($"Created ChangeRequest:  { createGitHash.Text }");
             }
             catch (Exception ex)
             {
@@ -128,20 +149,23 @@ namespace ChangeManagerWPF
         {
             try
             {
-                string gitHash = managementGitHash.SelectedItem.ToString();
-                ChangeRequest changeRequest = changeRequests[gitHash];
+                string privateKey = managementKey.Password;
+                privateKey = "7b0ce3ddd31b4bba4b8f116217b8db976b8537fae717fd5ef92c4233f83e7b36";
+
+                ChangeRequest changeRequest = (ChangeRequest)changeRequestsTable.SelectedItem;
+
                 List<string> responsibleParties = managementAddresses.Text.Split(',').Select(p => p.Trim()).ToList<string>();
 
                 if (managementAccept.IsChecked == true)
                 {
-                    await changeRequest.managementVoteAsync(true, responsibleParties, managementInfo.Text);
+                    await changeRequest.managementVoteAsync(privateKey, true, responsibleParties, managementInfo.Text);
                 }
                 else if (managementReject.IsChecked == true)
                 {
-                    await changeRequest.managementVoteAsync(false, new List<string>(), managementInfo.Text);
+                    await changeRequest.managementVoteAsync(privateKey, false, new List<string>(), managementInfo.Text);
                 }
 
-                MessageBox.Show($"ChangeRequest managed:  { gitHash }\n");
+                MessageBox.Show($"ChangeRequest managed:  { changeRequest.gitHash }\n");
             }
             catch (Exception ex)
             {
@@ -153,20 +177,21 @@ namespace ChangeManagerWPF
         {
             try
             {
-                string address = responsibleAddress.Text;
-                string gitHash = responsibleGitHash.SelectedItem.ToString();
-                ChangeRequest changeRequest = changeRequests[gitHash];
+                string privateKey = responsibleKey.Password;
+                privateKey = "2165a1e684eab9c0023fefe3fb8da09b18ac4b966b3136664a89cf0b081c8e38";
+
+                ChangeRequest changeRequest = (ChangeRequest)changeRequestsTable.SelectedItem;
 
                 if (responsibleAccept.IsChecked == true)
                 {
-                    await changeRequest.responsibleVoteAsync(address, true, responsibleInfo.Text);
+                    await changeRequest.responsibleVoteAsync(privateKey, true, responsibleInfo.Text);
                 }
                 else if (responsibleReject.IsChecked == true)
                 {
-                    await changeRequest.responsibleVoteAsync(address, false, responsibleInfo.Text);
+                    await changeRequest.responsibleVoteAsync(privateKey, false, responsibleInfo.Text);
                 }
 
-                MessageBox.Show($"Voted on ChangeRequest:  { gitHash }");
+                MessageBox.Show($"Voted on ChangeRequest:  { changeRequest.gitHash }");
             }
             catch (Exception ex)
             {
@@ -177,6 +202,45 @@ namespace ChangeManagerWPF
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             timer.Stop();
+        }
+
+        private void changeRequestSelected(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            ChangeRequest selection = (ChangeRequest)changeRequestsTable.SelectedItem;
+
+            Uri commitURI = new Uri("https://github.com/" + this.gitProject + "/commit/" + selection.gitHash.Substring(2));
+            managementLink.NavigateUri = commitURI;
+            responsibleLink.NavigateUri = commitURI;
+
+            updateVoteTableAndTabs();
+        }
+
+        private void updateVoteTableAndTabs()
+        {
+            ChangeRequest selection = (ChangeRequest)changeRequestsTable.SelectedItem;
+
+            if (changeRequestsTable.SelectedItem != null)
+            {
+                selection = (ChangeRequest)changeRequestsTable.SelectedItem;
+                votesTable.ItemsSource = selection.votes.Values.ToList();
+
+                if (selection.state == State.changeProposed)
+                {
+                    if (!tabControl.Items.Contains(managementTab)) tabControl.Items.Add(managementTab);
+                    if (tabControl.Items.Contains(responsibleTab)) tabControl.Items.Remove(responsibleTab);
+                }
+                else if (selection.state == State.changeManaged)
+                {
+                    if (!tabControl.Items.Contains(responsibleTab)) tabControl.Items.Add(responsibleTab);
+                    if (tabControl.Items.Contains(managementTab)) tabControl.Items.Remove(managementTab);
+                }
+            }
+        }
+
+        private void Link_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
     }
 }

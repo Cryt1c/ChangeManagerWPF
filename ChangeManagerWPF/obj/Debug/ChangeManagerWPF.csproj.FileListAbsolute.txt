@@ -34,3 +34,5 @@ C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManag
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManagerWPF.csprojAssemblyReference.cache
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\InitializationWindow.g.cs
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\InitializationWindow.baml
+C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\PrivateKeyWindow.g.cs
+C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\PrivateKeyWindow.baml

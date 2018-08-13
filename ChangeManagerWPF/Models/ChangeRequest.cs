@@ -1,4 +1,5 @@
-﻿using ChangeManagerWPF.Models.ChangeManager;
+﻿using ChangeManagerWPF.Models;
+using ChangeManagerWPF.Models.ChangeManager;
 using Contracts.Contracts.ChangeManager.CQS;
 using Contracts.Contracts.ChangeManager.DTOs;
 using Contracts.Contracts.ChangeManager.Service;
@@ -14,44 +15,43 @@ namespace ChangeManagerWPF.Model
 {
     class ChangeRequest
     {
-        public ChangeManagerService changeManagerService { get; set; }
         private string contractAddress;
 
+        public string gitHash { get; set; }
+        public Byte[] gitHashByte { get; set; }
         public BigInteger costs { get; private set; }
         public BigInteger estimation { get; private set; }
         public string additionalInformation { get; private set; }
+        public string changeOwner { get; set; }
 
         public State state { get; set; }
-        public string voteInfo { get; set; }
         public uint votesLeft { get; set; }
-        public string changeOwner { get; set; }
-        public string gitHash { get; set; }
-        public Byte[] gitHashByte { get; set; }
+        public Dictionary<string, Vote> votes;
 
-        public ChangeRequest(ChangeManagerService changeManagerService, string contractAddress)
+
+        public ChangeRequest(string contractAddress)
         {
-            this.changeManagerService = changeManagerService;
             this.contractAddress = contractAddress;
+            this.votes = new Dictionary<string, Vote>();
         }
 
-        public byte[] HashStringToByteArray(string gitHash)
-        {
-            return Enumerable.Range(1, gitHash.Length / 2 - 1) // Range(1, - to get rid of "0x"  
-                .Select(i => Convert.ToByte(gitHash.Substring(i * 2, 2), 16))
-                .ToArray();
-        }
-
-        internal async Task createChangeRequestAsync(string gitHash, string additionalInformation, uint estimation, uint costs)
+        internal async Task createChangeRequestAsync(string privateKey, string gitHash, string additionalInformation, uint estimation, uint costs)
         {
             CreateNewChangeRequestFunction changeRequestFunction = new CreateNewChangeRequestFunction();
-            changeRequestFunction.GitHash = HashStringToByteArray(gitHash);
+            changeRequestFunction.GitHash = Converter.HashStringToByteArray(gitHash);
             changeRequestFunction.AdditionalInformation = additionalInformation;
             changeRequestFunction.Estimation = estimation;
             changeRequestFunction.Costs = costs;
-            await changeManagerService.CreateNewChangeRequestRequestAsync(changeRequestFunction);
+
+            Web3 web3 = new Web3(new Account(privateKey));
+
+            ChangeManagerService createService = new ChangeManagerService(web3, this.contractAddress);
+            changeRequestFunction.Gas = 500000;
+
+            await createService.CreateNewChangeRequestRequestAsync(changeRequestFunction);
         }
 
-        internal async Task managementVoteAsync(bool accept, List<string> responsibleParties, string voteInfo)
+        internal async Task managementVoteAsync(string privateKey, bool accept, List<string> responsibleParties, string voteInfo)
         {
             ManagementVoteFunction managementFunction = new ManagementVoteFunction();
             managementFunction.GitHash = gitHashByte;
@@ -59,7 +59,11 @@ namespace ChangeManagerWPF.Model
             managementFunction.ResponsibleParties = responsibleParties;
             managementFunction.VoteInfo = voteInfo;
 
-            await this.changeManagerService.ManagementVoteRequestAsync(managementFunction);
+            Web3 web3 = new Web3(new Account(privateKey));
+
+            ChangeManagerService managementService = new ChangeManagerService(web3, this.contractAddress);
+
+            await managementService.ManagementVoteRequestAsync(managementFunction);
         }
 
         internal async Task responsibleVoteAsync(string privateKey, bool accept, string voteInfo)
@@ -73,15 +77,20 @@ namespace ChangeManagerWPF.Model
             Web3 web3 = new Web3(new Account(privateKey));
 
             ChangeManagerService responsibleService = new ChangeManagerService(web3, this.contractAddress);
-            responsibleVoteFunction.Gas = 1000000;
+            responsibleVoteFunction.Gas = 500000;
 
             await responsibleService.ResponsibleVoteRequestAsync(responsibleVoteFunction);
         }
 
-        public void updateVotes(State state, String voteInfo, BigInteger votesLeft, String voter)
+        public void updateVotes(State state, String voteInfo, BigInteger votesLeft, String voter, bool acceptChange)
         {
             this.state = state;
             this.votesLeft = (uint)votesLeft;
+            Vote vote = new Vote();
+            vote.acceptChange = acceptChange;
+            vote.voteInfo = voteInfo;
+            vote.voter = voter;
+            votes.Add(voter, vote);
         }
 
         public void updateChangeRequest(String gitHash, String additionalInformation, BigInteger costs, BigInteger estimation)

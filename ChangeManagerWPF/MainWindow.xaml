@@ -5,31 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChangeManagerWPF"
         mc:Ignorable="d"
-        Title="ChangeManager" Height="450" Width="800"
+        Title="ChangeManager"
+        WindowState="Maximized"
         Closing="Window_Closing"
         >
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="200"/>
+            <RowDefinition Height="250"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TabControl>
-            <TabItem Header="Create CR">
+        <TabControl x:Name="tabControl">
+            <TabItem x:Name="createTab" Header="Create CR">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="150"/>
                         <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="10"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="10"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
@@ -40,37 +39,38 @@
                     </Grid.RowDefinitions>
 
 
-                    <TextBlock Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Text="Create new change request:"/>
+                    <TextBlock Margin="10" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Text="Create new change request:"/>
 
-                    <TextBlock Grid.Column="1" Grid.Row="2" Text="Githash:"/>
-                    <TextBox x:Name="gitHash" Grid.Column="2" Grid.Row="2" Width="300" Text="0x29932f3915935d773dc8d52c292cadd81c81071d"/>
+                    <TextBlock Margin="5" Grid.Column="1" Grid.Row="2" Text="Githash:"/>
+                    <ComboBox Margin="5" x:Name="createGitHash" Grid.Column="2" Grid.Row="2" Width="300"/>
 
-                    <TextBlock Grid.Column="1" Grid.Row="3" Text="Additional information:"/>
-                    <TextBox x:Name="additionalInformation" Grid.Column="2" Grid.Row="3" Width="300" Text="asdfwer"/>
+                    <TextBlock Margin="5" Grid.Column="1" Grid.Row="3" Text="Additional Information:"/>
+                    <TextBox Margin="5" x:Name="createAdditionalInformation" Grid.Column="2" Grid.Row="3" Width="300" Text="asdfwer"/>
 
-                    <TextBlock Grid.Column="1" Grid.Row="4" Text="Costs:"/>
-                    <TextBox x:Name="costs" Grid.Column="2" Grid.Row="4" Width="300" Text="1234"/>
+                    <TextBlock Margin="5" Grid.Column="1" Grid.Row="4" Text="Costs (in €):"/>
+                    <TextBox Margin="5" x:Name="createCosts" Grid.Column="2" Grid.Row="4" Width="300" Text="1234"/>
 
-                    <TextBlock Grid.Column="1" Grid.Row="5" Text="Estimation (in hours):"/>
-                    <TextBox x:Name="estimation" Grid.Column="2" Grid.Row="5" Width="300" Text="15768"/>
+                    <TextBlock Margin="5" Grid.Column="1" Grid.Row="5" Text="Estimation (in hours):"/>
+                    <TextBox Margin="5" x:Name="createEstimation" Grid.Column="2" Grid.Row="5" Width="300" Text="15768"/>
 
-                    <Button x:Name="createButton" Grid.Column="2" Grid.Row="6" Content="Create" Click="createChangeRequestAsync"/>
+                    <TextBlock Margin="5" Grid.Column="1" Grid.Row="6" Text="Private Key:"/>
+                    <PasswordBox Margin="5" x:Name="createKey" Grid.Column="2" Grid.Row="6" Width="300"/>
+
+                    <Button Margin="5" x:Name="createButton" Grid.Column="2" Grid.Row="7" Content="Create" Click="createChangeRequestAsync"/>
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Management Vote">
+            <TabItem x:Name="managementTab" Header="Management Vote">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="150"/>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="10"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="10"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
@@ -79,38 +79,41 @@
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Text="Manage a ChangeRequest:"/>
+                    <TextBlock Margin="10" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Text="Manage the selected Change Request:"/>
+                    <TextBlock Margin="10"  Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="3" >
+                        <Hyperlink x:Name="managementLink" RequestNavigate="Link_RequestNavigate">Link to the Github Commit</Hyperlink>
+                    </TextBlock>
+                    
+                    <TextBlock Margin="5" Grid.Column="1" Grid.Row="2" Text="Vote:"/>
+                    <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal">
+                        <RadioButton Margin="5" x:Name="managementAccept" Content="Accept"></RadioButton>
+                        <RadioButton Margin="5" x:Name="managementReject" Content="Reject"></RadioButton>
+                    </StackPanel>
 
-                    <TextBlock Grid.Column="1" Grid.Row="2" Text="Githash:"/>
-                    <ComboBox x:Name="managementGitHash" Grid.Column="2" Grid.Row="2" Width="300" />
+                    <TextBlock Margin="5" Grid.Column="1" Grid.Row="3" Text="Addresses:"/>
+                    <TextBox Margin="5" x:Name="managementAddresses" Grid.Column="2" Grid.Row="3" Width="300" Text="0x24bF6D040AA3339De86074ea9a46c4f8a7C800f8, 0x8FCDFa5e58B73F8941C093862D92979d653E43b2"/>
 
-                    <TextBlock Grid.Column="1" Grid.Row="3" Text="Accept?"/>
-                    <RadioButton x:Name="managementAccept" Content="Yes" Grid.Column="2" Grid.Row="3"></RadioButton>
-                    <RadioButton x:Name="managementReject" Content="No" Grid.Column="3" Grid.Row="3"></RadioButton>
+                    <TextBlock Margin="5" Grid.Column="1" Grid.Row="4" Text="Vote Info:"/>
+                    <TextBox Margin="5" x:Name="managementInfo" Grid.Column="2" Grid.Row="4" Width="300" Text="This is managementinfo"/>
 
-                    <TextBlock Grid.Column="1" Grid.Row="4" Text="Addresses:"/>
-                    <TextBox x:Name="managementAddresses" Grid.Column="2" Grid.Row="4" Width="300" Text="0x24bF6D040AA3339De86074ea9a46c4f8a7C800f8, 0x8FCDFa5e58B73F8941C093862D92979d653E43b2"/>
+                    <TextBlock Margin="5" Grid.Column="1" Grid.Row="5" Text="Private Key:"/>
+                    <PasswordBox Margin="5" x:Name="managementKey" Grid.Column="2" Grid.Row="5" Width="300"/>
 
-                    <TextBlock Grid.Column="1" Grid.Row="5" Text="Vote Info:"/>
-                    <TextBox x:Name="managementInfo" Grid.Column="2" Grid.Row="5" Width="300" Text="This is managementinfo"/>
-
-                    <Button x:Name="managementButton" Grid.Column="2" Grid.Row="6" Content="Vote" Click="managementVote"/>
+                    <Button Margin="5" x:Name="managementButton" Grid.Column="2" Grid.Row="6" Content="Manage" Click="managementVote"/>
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Responsible Vote">
+            <TabItem x:Name="responsibleTab" Header="Responsible Vote">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="150"/>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="10"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="10"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
@@ -119,41 +122,56 @@
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Column="1" Grid.Row="0" Text="Your Private Key:"/>
-                    <TextBox x:Name="responsibleAddress" Grid.Column="2" Grid.Row="0" Width="300" Text="2165a1e684eab9c0023fefe3fb8da09b18ac4b966b3136664a89cf0b081c8e38"/>
+                    <TextBlock Margin="10" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Text="Vote on the selected Change Request:"/>
+                    <TextBlock Margin="10"  Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="3" >
+                        <Hyperlink x:Name="responsibleLink" RequestNavigate="Link_RequestNavigate">Link to the Github Commit</Hyperlink>
+                    </TextBlock>
 
-                    <TextBlock Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Text="Vote on a ChangeRequest:"/>
+                    <TextBlock Margin="5" Grid.Column="1" Grid.Row="2" Text="Vote:"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="2">
+                        <RadioButton Margin="5" x:Name="responsibleAccept" Content="Accept"></RadioButton>
+                        <RadioButton Margin="5" x:Name="responsibleReject" Content="Reject"></RadioButton>
+                    </StackPanel>
 
-                    <TextBlock Grid.Column="1" Grid.Row="2" Text="Githash:"/>
-                    <ComboBox x:Name="responsibleGitHash" Grid.Column="2" Grid.Row="2" Width="300"/>
+                    <TextBlock Margin="5" Grid.Column="1" Grid.Row="3" Text="Vote Info:"/>
+                    <TextBox Margin="5" x:Name="responsibleInfo" Grid.Column="2" Grid.Row="3" Width="300"/>
 
-                    <TextBlock Grid.Column="1" Grid.Row="3" Text="Accept?"/>
-                    <RadioButton x:Name="responsibleAccept" Content="Yes" Grid.Column="2" Grid.Row="3"></RadioButton>
-                    <RadioButton x:Name="responsibleReject" Content="No" Grid.Column="3" Grid.Row="3"></RadioButton>
+                    <TextBlock Margin="5" Grid.Column="1" Grid.Row="4" Text="Private Key:"/>
+                    <PasswordBox Margin="5" x:Name="responsibleKey" Grid.Column="2" Grid.Row="4" Width="300"/>
 
-                    <TextBlock Grid.Column="1" Grid.Row="4" Text="Vote Info:"/>
-                    <TextBox x:Name="responsibleInfo" Grid.Column="2" Grid.Row="4" Width="300"/>
-
-                    <Button x:Name="responsibleButton" Grid.Column="2" Grid.Row="6" Content="Vote" Click="responsibleVote"/>
+                    <Button Margin="5" x:Name="responsibleButton" Grid.Column="2" Grid.Row="5" Content="Vote" Click="responsibleVote"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Release" />
         </TabControl >
         <ListView 
             Grid.Row="1"
-            HorizontalAlignment="Left" 
-            VerticalAlignment="Top"
+            HorizontalAlignment="Stretch" 
+            VerticalAlignment="Stretch"
             Height="200" 
-            Name="changeRequestsTable" 
-            Width="auto">
+            Name="changeRequestsTable"
+            SelectionChanged="changeRequestSelected">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Githash" Width="300" DisplayMemberBinding="{Binding gitHash}" />
-                    <GridViewColumn Header="State" Width="100" DisplayMemberBinding="{Binding state, UpdateSourceTrigger=PropertyChanged}"/>
-                    <GridViewColumn Header="Votes Left" Width="75" DisplayMemberBinding="{Binding votesLeft, UpdateSourceTrigger=PropertyChanged}" />
-                    <GridViewColumn Header="Additional Information" Width="125" DisplayMemberBinding="{Binding additionalInformation}"/>
-                    <GridViewColumn Header="Costs" Width="75" DisplayMemberBinding="{Binding costs}"/>
-                    <GridViewColumn Header="Estimation" Width="75" DisplayMemberBinding="{Binding estimation}"/>
+                    <GridViewColumn Header="State" Width="100" DisplayMemberBinding="{Binding state}"/>
+                    <GridViewColumn Header="Votes Left" Width="65" DisplayMemberBinding="{Binding votesLeft}" />
+                    <GridViewColumn Header="Additional Information" Width="650" DisplayMemberBinding="{Binding additionalInformation}"/>
+                    <GridViewColumn Header="Costs (€)" Width="75" DisplayMemberBinding="{Binding costs}"/>
+                    <GridViewColumn Header="Estimation (h)" Width="80" DisplayMemberBinding="{Binding estimation}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <ListView 
+            Grid.Row="2"
+            HorizontalAlignment="Stretch" 
+            VerticalAlignment="Stretch"
+            Height="200" 
+            Name="votesTable">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Voter" Width="300" DisplayMemberBinding="{Binding voter}" />
+                    <GridViewColumn Header="Accepted" Width="60" DisplayMemberBinding="{Binding acceptChange}"/>
+                    <GridViewColumn Header="Vote Information" Width="910" DisplayMemberBinding="{Binding voteInfo}"/>
                 </GridView>
             </ListView.View>
         </ListView>

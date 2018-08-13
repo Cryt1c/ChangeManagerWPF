@@ -3,7 +3,13 @@ using Contracts.Contracts.ChangeManager.Service;
 using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Windows;
+
 
 namespace ChangeManagerWPF
 {
@@ -20,29 +26,29 @@ namespace ChangeManagerWPF
         {
             InitializationWindow iWnd = new InitializationWindow(NewChangeManager, UseChangeManager);
             iWnd.Show();
+
         }
 
-        private async void NewChangeManager(string gitProject)
+        private async void NewChangeManager(string gitProject, string privateKey)
         {
-            web3 = new Web3(new Account("7b0ce3ddd31b4bba4b8f116217b8db976b8537fae717fd5ef92c4233f83e7b36"));
+            web3 = new Web3(new Account(privateKey));
             deployment = new ChangeManagerDeployment();
             TransactionReceipt receipt = await ChangeManagerService.DeployContractAndWaitForReceiptAsync(web3, deployment);
 
             changeManagerService = new ChangeManagerService(web3, receipt.ContractAddress);
 
-            MainWindow mWnd = new MainWindow(changeManagerService, receipt.ContractAddress);
-            mWnd.Title = "ChangeManager";
+            Web3.GetAddressFromPrivateKey(privateKey);
+            // TODO: Delete Testcode
+            gitProject = "Cryt1c/ChangeManager";
+            MainWindow mWnd = new MainWindow(receipt.ContractAddress, gitProject);
+            mWnd.Title = "ChangeManager for https://github.com/" + gitProject + " Managed by: " + Web3.GetAddressFromPrivateKey(privateKey); ;
             mWnd.Show();
         }
 
         private void UseChangeManager(string address, string gitProject)
         {
-            web3 = new Web3(new Account("7b0ce3ddd31b4bba4b8f116217b8db976b8537fae717fd5ef92c4233f83e7b36"));
-
-            changeManagerService = new ChangeManagerService(web3, address);
-
-            MainWindow mWnd = new MainWindow(changeManagerService, address);
-            mWnd.Title = "ChangeManager";
+            MainWindow mWnd = new MainWindow(address, gitProject);
+            mWnd.Title = "ChangeManager for https://github.com/" + gitProject;
             mWnd.Show();
         }
     }

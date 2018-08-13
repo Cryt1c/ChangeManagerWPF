@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChangeManagerWPF.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,10 +20,10 @@ namespace ChangeManagerWPF
     /// </summary>
     public partial class InitializationWindow : Window
     {
-        private Action<string> newChangeManager;
+        private Action<string, string> newChangeManager;
         private Action<string, string> useChangeManager;
 
-        public InitializationWindow(Action<string> newChangeManager, Action<string, string> useChangeManager)
+        public InitializationWindow(Action<string, string> newChangeManager, Action<string, string> useChangeManager)
         {
             this.newChangeManager = newChangeManager;
             this.useChangeManager = useChangeManager;
@@ -36,7 +37,8 @@ namespace ChangeManagerWPF
 
         private void initNew(object sender, RoutedEventArgs e)
         {
-            newChangeManager(initGitProject.Text);
+            PrivateKeyWindow pKWnd = new PrivateKeyWindow(newChangeManager, initGitProject.Text);
+            pKWnd.Show();
         }
     }
 }
