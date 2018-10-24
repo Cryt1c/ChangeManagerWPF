@@ -1,6 +1,6 @@
 # ChangeManagerWPF
 
-This repository contains a the ChangeManager smart contract and the C# frontend ChangeManagerWPF application to interact with the blockchain.
+This repository contains a the ChangeManager smart contract and the C# frontend ChangeManagerWPF application to interact with the blockchain. The code for the ChangeManager is managed here (https://github.com/Cryt1c/ChangeManager).
 
 The smart contract represents a change management workflow where a general manager can setup a new contract and everyone can create new ChangeRequest
 from github. Furthermore, the general manager can decide which responsible parties are able to vote on the release of a change. 
