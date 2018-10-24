@@ -24,7 +24,7 @@ All votes are transparently tracked on the blockchain using events.
 ## Use an already existing ChangeManager smart contract
 1. Add a Github Project (e.g. ``Cryt1c/ChangeManagerWPF``)
 2. Add the address of the existing ChangeManager contract, which you can find in ganache under ``Logs`` if you have already created a ChangeManager before
-![Logs in Ganache](./contract_address.png)
+![Logs in Ganache](/contract_address.png)
 3. Click on ``Use existing ContractManager``
 
 # Create a ChangeRequest
