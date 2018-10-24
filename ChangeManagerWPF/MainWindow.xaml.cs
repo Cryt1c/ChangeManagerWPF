@@ -178,7 +178,7 @@ namespace ChangeManagerWPF
             try
             {
                 string privateKey = responsibleKey.Password;
-                privateKey = "2165a1e684eab9c0023fefe3fb8da09b18ac4b966b3136664a89cf0b081c8e38";
+                //privateKey = "2165a1e684eab9c0023fefe3fb8da09b18ac4b966b3136664a89cf0b081c8e38";
 
                 ChangeRequest changeRequest = (ChangeRequest)changeRequestsTable.SelectedItem;
 

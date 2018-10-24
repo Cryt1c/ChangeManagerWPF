@@ -29,8 +29,8 @@
             &lt;owner&gt;/&lt;project&gt;</TextBox>  
 
         <WrapPanel Margin="5" Grid.Row="4" Grid.Column="2"  HorizontalAlignment="Right" >
-            <Button Margin="5" MinWidth="60" Click="initUse" >Use ContactManager at address</Button>
-            <Button Margin="5" MinWidth="60" Click="initNew">Create new ContactManager</Button>
+            <Button Margin="5" MinWidth="60" Click="initUse" >Use ContractManager at address</Button>
+            <Button Margin="5" MinWidth="60" Click="initNew">Create new ContractManager</Button>
         </WrapPanel>
     </Grid>
 </Window>
