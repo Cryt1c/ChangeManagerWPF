@@ -1,10 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\ChangeManagerWPF",
-    "\\ChangeManagerWPF\\Models",
-    "\\ChangeManagerWPF\\Properties"
+    "\\ChangeManagerWPF"
   ],
-  "SelectedNode": "\\ChangeManagerWPF\\Models\\State.cs",
+  "SelectedNode": "\\ChangeManagerWPF\\MainWindow.xaml",
   "PreviewInSolutionExplorer": false
 }

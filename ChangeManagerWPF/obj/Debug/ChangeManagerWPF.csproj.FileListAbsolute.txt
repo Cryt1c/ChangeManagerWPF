@@ -1,7 +1,3 @@
-C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\MainWindow.g.cs
-C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\App.g.cs
-C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManagerWPF_MarkupCompile.cache
-C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManagerWPF_MarkupCompile.lref
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\bin\Debug\ChangeManagerWPF.exe.config
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\bin\Debug\ChangeManagerWPF.exe
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\bin\Debug\ChangeManagerWPF.pdb
@@ -23,7 +19,15 @@ C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\bin\Debug\Newtonsoft.
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\bin\Debug\Common.Logging.Core.pdb
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\bin\Debug\Common.Logging.Core.xml
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\bin\Debug\Newtonsoft.Json.xml
+C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\InitializationWindow.g.cs
+C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\MainWindow.g.cs
+C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\PrivateKeyWindow.g.cs
+C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\App.g.cs
+C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManagerWPF_MarkupCompile.cache
+C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManagerWPF_MarkupCompile.lref
+C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\InitializationWindow.baml
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\MainWindow.baml
+C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\PrivateKeyWindow.baml
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManagerWPF.g.resources
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManagerWPF.Properties.Resources.resources
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManagerWPF.csproj.GenerateResource.cache
@@ -31,8 +35,3 @@ C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManag
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManagerWPF.csproj.CopyComplete
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManagerWPF.exe
 C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManagerWPF.pdb
-C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\ChangeManagerWPF.csprojAssemblyReference.cache
-C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\InitializationWindow.g.cs
-C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\InitializationWindow.baml
-C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\PrivateKeyWindow.g.cs
-C:\Users\David\workspace\ChangeManagerWPF\ChangeManagerWPF\obj\Debug\PrivateKeyWindow.baml

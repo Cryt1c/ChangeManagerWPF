@@ -31,6 +31,7 @@ namespace ChangeManagerWPF
 
         private async void NewChangeManager(string gitProject, string privateKey)
         {
+            // Deploy new ChangeManager on blockchain
             web3 = new Web3(new Account(privateKey));
             deployment = new ChangeManagerDeployment();
             TransactionReceipt receipt = await ChangeManagerService.DeployContractAndWaitForReceiptAsync(web3, deployment);
@@ -38,8 +39,6 @@ namespace ChangeManagerWPF
             changeManagerService = new ChangeManagerService(web3, receipt.ContractAddress);
 
             Web3.GetAddressFromPrivateKey(privateKey);
-            // TODO: Delete Testcode
-            gitProject = "Cryt1c/ChangeManager";
             MainWindow mWnd = new MainWindow(receipt.ContractAddress, gitProject);
             mWnd.Title = "ChangeManager for https://github.com/" + gitProject + " Managed by: " + Web3.GetAddressFromPrivateKey(privateKey); ;
             mWnd.Show();
