@@ -31,8 +31,6 @@ namespace ChangeManagerWPF.Models
 
         private void privateKeyOK(object sender, RoutedEventArgs e)
         {
-            // TODO: Delete Testcode
-            privateKey.Password = "7b0ce3ddd31b4bba4b8f116217b8db976b8537fae717fd5ef92c4233f83e7b36";
             if (privateKey.Password != null)
             {
                 newChangeManager(gitProject, privateKey.Password);

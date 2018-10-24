@@ -124,14 +124,13 @@ namespace ChangeManagerWPF
         {
             try
             {
-                // Prevents creation of CR duplicates
+                // Prevents creation of CR duplicates; Could make sense if a ChangeRequest has been rejected before to revisit it
                 if (this.changeRequests.ContainsKey(createGitHash.Text))
                 {
                     MessageBox.Show($"ChangeRequest already exists:  { createGitHash.Text }");
                     return;
                 }
                 string privateKey = createKey.Password;
-                privateKey = "7b0ce3ddd31b4bba4b8f116217b8db976b8537fae717fd5ef92c4233f83e7b36";
 
                 ChangeRequest changeRequest = new ChangeRequest(this.contractAddress);
                 await changeRequest.createChangeRequestAsync(privateKey, createGitHash.Text, createAdditionalInformation.Text, UInt32.Parse(createEstimation.Text), UInt32.Parse(createCosts.Text));
@@ -145,12 +144,12 @@ namespace ChangeManagerWPF
             }
         }
 
+        // Manage a ChangeRequest
         private async void managementVote(object sender, RoutedEventArgs e)
         {
             try
             {
                 string privateKey = managementKey.Password;
-                privateKey = "7b0ce3ddd31b4bba4b8f116217b8db976b8537fae717fd5ef92c4233f83e7b36";
 
                 ChangeRequest changeRequest = (ChangeRequest)changeRequestsTable.SelectedItem;
 
@@ -173,12 +172,12 @@ namespace ChangeManagerWPF
             }
         }
 
+        // Let the responsible parties vote on the ChangeRequest
         private async void responsibleVote(object sender, RoutedEventArgs e)
         {
             try
             {
                 string privateKey = responsibleKey.Password;
-                //privateKey = "2165a1e684eab9c0023fefe3fb8da09b18ac4b966b3136664a89cf0b081c8e38";
 
                 ChangeRequest changeRequest = (ChangeRequest)changeRequestsTable.SelectedItem;
 
@@ -204,6 +203,7 @@ namespace ChangeManagerWPF
             timer.Stop();
         }
 
+        // Update the table and show correct tabs for selected ChangeRequest
         private void changeRequestSelected(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             ChangeRequest selection = (ChangeRequest)changeRequestsTable.SelectedItem;
@@ -215,6 +215,7 @@ namespace ChangeManagerWPF
             updateVoteTableAndTabs();
         }
 
+        // Show votes and correct tabs for selected ChangeRequest
         private void updateVoteTableAndTabs()
         {
             ChangeRequest selection = (ChangeRequest)changeRequestsTable.SelectedItem;
