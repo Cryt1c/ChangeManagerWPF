@@ -235,6 +235,11 @@ namespace ChangeManagerWPF
                     if (!tabControl.Items.Contains(responsibleTab)) tabControl.Items.Add(responsibleTab);
                     if (tabControl.Items.Contains(managementTab)) tabControl.Items.Remove(managementTab);
                 }
+                else if (selection.state == State.changeApproved || selection.state == State.changeRejected)
+                {
+                    if (tabControl.Items.Contains(responsibleTab)) tabControl.Items.Remove(responsibleTab);
+                    if (tabControl.Items.Contains(managementTab)) tabControl.Items.Remove(managementTab);
+                }
             }
         }
 
