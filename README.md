@@ -11,7 +11,8 @@ All votes are transparently tracked on the blockchain using events.
 
 1. Install Ganache (https://github.com/trufflesuite/ganache/releases/) to simulate the Ethereum Blockchain
 2. Build solution in Visual Studio 2017
-3. Run Ganache
+3. Run Ganache and make these settings:
+![Settings in Ganache](/image.png)
 4. Run ChangeManagerWPF.exe in the Release folder (multiple instances can use one smart contract at the same time)
 
 # Use ChangeManager smart contract
