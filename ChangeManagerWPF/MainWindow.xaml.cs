@@ -4,6 +4,7 @@ using ChangeManagerWPF.Models.ChangeManager;
 using Contracts.Contracts.ChangeManager.DTOs;
 using Contracts.Contracts.ChangeManager.Service;
 using Nethereum.Contracts;
+using Nethereum.Hex.HexTypes;
 using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3;
 using Newtonsoft.Json;
@@ -14,6 +15,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Numerics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -32,6 +34,7 @@ namespace ChangeManagerWPF
         BlockParameter lastBlock;
         BlockParameter firstBlock;
         DispatcherTimer timer;
+        Web3 web3;
         string gitProject;
 
 
@@ -43,14 +46,14 @@ namespace ChangeManagerWPF
 
             this.contractAddress = contractAddress;
             changeRequests = new Dictionary<string, ChangeRequest>();
-
-            ChangeManagerService changeManagerService = new ChangeManagerService(new Web3(), contractAddress);
+            web3 = new Web3();
+            ChangeManagerService changeManagerService = new ChangeManagerService(web3, contractAddress);
             newVoteEventLog = changeManagerService.ContractHandler.GetEvent<NewVoteEventDTO>();
             newChangeRequestEventLog = changeManagerService.ContractHandler.GetEvent<NewChangeRequestEventDTO>();
             firstBlock = BlockParameter.CreateEarliest();
 
             timer = new DispatcherTimer();
-            timer.Tick += new EventHandler(checkEvents);
+            timer.Tick += new EventHandler(checkEventsAndUpdateTable);
             timer.Interval = new TimeSpan(0, 0, 2);
             timer.Start();
             this.gitProject = gitProject;
@@ -76,7 +79,66 @@ namespace ChangeManagerWPF
             commit.ForEach(x => createGitHash.Items.Add("0x" + x.sha));
         }
 
-        private async void checkEvents(object sender, EventArgs e)
+        // This method will check all blocks for new Events. 
+        private async Task<Dictionary<string, ChangeRequest>> checkCREvents(string contractAdress)
+        {
+            ChangeManagerService changeManagerService = new ChangeManagerService(new Web3(), contractAddress);
+            Event newVoteEventLog = changeManagerService.ContractHandler.GetEvent<NewVoteEventDTO>();
+            Event newChangeRequestEventLog = changeManagerService.ContractHandler.GetEvent<NewChangeRequestEventDTO>();
+
+            Dictionary<string, ChangeRequest> result = new Dictionary<string, ChangeRequest>();
+
+            BlockParameter firstBlock = BlockParameter.CreateEarliest();
+            BlockParameter lastBlock = BlockParameter.CreateLatest();
+            NewFilterInput filterCR = newChangeRequestEventLog.CreateFilterInput(firstBlock, lastBlock);
+            NewFilterInput filterVote = newVoteEventLog.CreateFilterInput(firstBlock, lastBlock);
+
+            List<EventLog<NewChangeRequestEventDTO>> logCR = await newChangeRequestEventLog.GetAllChanges<NewChangeRequestEventDTO>(filterCR);
+            List<EventLog<NewVoteEventDTO>> logVote = await newVoteEventLog.GetAllChanges<NewVoteEventDTO>(filterVote);
+
+            // Get confirmation for CR creation. Then add CR to table and combobox for management vote.
+            Debug.WriteLine("Checking for CR Events: " + logCR.Count);
+            foreach (EventLog<NewChangeRequestEventDTO> cr in logCR)
+            {
+                ChangeRequest changeRequest;
+                String gitHash = Converter.ByteArrayToBinHex(cr.Event.GitHash);
+
+                HexBigInteger blocknumber = cr.Log.BlockNumber;
+                Block block = await web3.Eth.Blocks.GetBlockWithTransactionsHashesByNumber.SendRequestAsync(blocknumber);
+
+                if (result.ContainsKey(gitHash))
+                {
+                    changeRequest = result[gitHash];
+                }
+                else
+                {
+                    changeRequest = new ChangeRequest(this.contractAddress);
+                    result.Add(gitHash, changeRequest);
+                }
+                changeRequest.updateChangeRequest(gitHash, cr.Event.AdditionalInformation, cr.Event.Costs, cr.Event.Estimation, block.Timestamp.Value);
+            }
+
+            // Get vote confirmation. Then update State of the vote.
+            Debug.WriteLine("Checking for Vote Events: " + logVote.Count);
+            foreach (EventLog<NewVoteEventDTO> vote in logVote)
+            {
+                String gitHash = Converter.ByteArrayToBinHex(vote.Event.GitHash);
+                ChangeRequest changeRequest = result[gitHash];
+
+                HexBigInteger blocknumber = vote.Log.BlockNumber;
+                Block block = await web3.Eth.Blocks.GetBlockWithTransactionsHashesByNumber.SendRequestAsync(blocknumber);
+
+                if (!changeRequest.votes.ContainsKey(vote.Event.Voter))
+                {
+                    changeRequest.updateVotes((State)vote.Event.CurrentState, vote.Event.VoteInfo, vote.Event.VotesLeft, vote.Event.Voter, vote.Event.Vote, block.Timestamp.Value);
+                }
+            }
+
+            return result;
+        }
+
+        // This method only checks the yet unchecked blocks for new Events and updates the CR and vote tables.
+        private async void checkEventsAndUpdateTable(object sender, EventArgs e)
         {
             lastBlock = BlockParameter.CreateLatest();
             NewFilterInput filterCR = newChangeRequestEventLog.CreateFilterInput(firstBlock, lastBlock);
@@ -92,6 +154,10 @@ namespace ChangeManagerWPF
             {
                 ChangeRequest changeRequest;
                 String gitHash = Converter.ByteArrayToBinHex(cr.Event.GitHash);
+
+                HexBigInteger blocknumber = cr.Log.BlockNumber;
+                Block block = await web3.Eth.Blocks.GetBlockWithTransactionsHashesByNumber.SendRequestAsync(blocknumber);
+
                 if (changeRequests.ContainsKey(gitHash))
                 {
                     changeRequest = changeRequests[gitHash];
@@ -101,7 +167,7 @@ namespace ChangeManagerWPF
                     changeRequest = new ChangeRequest(this.contractAddress);
                     changeRequests.Add(gitHash, changeRequest);
                 }
-                changeRequest.updateChangeRequest(gitHash, cr.Event.AdditionalInformation, cr.Event.Costs, cr.Event.Estimation);
+                changeRequest.updateChangeRequest(gitHash, cr.Event.AdditionalInformation, cr.Event.Costs, cr.Event.Estimation, block.Timestamp.Value);
             }
 
             // Get vote confirmation. Then update State of the vote.
@@ -111,9 +177,12 @@ namespace ChangeManagerWPF
                 String gitHash = Converter.ByteArrayToBinHex(vote.Event.GitHash);
                 ChangeRequest changeRequest = changeRequests[gitHash];
 
+                HexBigInteger blocknumber = vote.Log.BlockNumber;
+                Block block = await web3.Eth.Blocks.GetBlockWithTransactionsHashesByNumber.SendRequestAsync(blocknumber);
+
                 if (!changeRequest.votes.ContainsKey(vote.Event.Voter))
                 {
-                    changeRequest.updateVotes((State)vote.Event.CurrentState, vote.Event.VoteInfo, vote.Event.VotesLeft, vote.Event.Voter, vote.Event.Vote);
+                    changeRequest.updateVotes((State)vote.Event.CurrentState, vote.Event.VoteInfo, vote.Event.VotesLeft, vote.Event.Voter, vote.Event.Vote, block.Timestamp.Value);
                 }
             }
             updateVoteTableAndTabs();
