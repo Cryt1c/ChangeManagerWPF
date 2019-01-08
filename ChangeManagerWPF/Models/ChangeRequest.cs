@@ -23,6 +23,7 @@ namespace ChangeManagerWPF.Model
         public BigInteger estimation { get; private set; }
         public string additionalInformation { get; private set; }
         public string changeOwner { get; set; }
+        public BigInteger timestamp { get; set; }
 
         public State state { get; set; }
         public uint votesLeft { get; set; }
@@ -82,7 +83,7 @@ namespace ChangeManagerWPF.Model
             await responsibleService.ResponsibleVoteRequestAsync(responsibleVoteFunction);
         }
 
-        public void updateVotes(State state, String voteInfo, BigInteger votesLeft, String voter, bool acceptChange)
+        public void updateVotes(State state, String voteInfo, BigInteger votesLeft, String voter, bool acceptChange, BigInteger timestamp)
         {
             this.state = state;
             this.votesLeft = (uint)votesLeft;
@@ -90,16 +91,18 @@ namespace ChangeManagerWPF.Model
             vote.acceptChange = acceptChange;
             vote.voteInfo = voteInfo;
             vote.voter = voter;
+            vote.timestamp = timestamp;
             votes.Add(voter, vote);
         }
 
-        public void updateChangeRequest(String gitHash, String additionalInformation, BigInteger costs, BigInteger estimation)
+        public void updateChangeRequest(String gitHash, String additionalInformation, BigInteger costs, BigInteger estimation, BigInteger timestamp)
         {
             this.gitHash = gitHash;
             this.gitHashByte = Converter.HashStringToByteArray(gitHash);
             this.costs = costs;
             this.estimation = estimation;
             this.additionalInformation = additionalInformation;
+            this.timestamp = timestamp;
         }
     }
 }
